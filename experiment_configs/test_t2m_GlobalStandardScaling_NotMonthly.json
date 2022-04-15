@@ -1,0 +1,81 @@
+{
+    "name": "t2m_GlobalSS_NotMonthly",
+    "phase": "val",
+    "gpu_ids": [0],
+    "path": {
+        "log": "logs",
+        "tb_logger": "tb_logger",
+        "results": "results",
+        "checkpoint": "checkpoint",
+        "resume_state": "/home/papikyan/guided_research/development/experiments/experiments_wbd/experiments/t2m_GlobalSS_NotMonthly_220216_103355/checkpoint/I60000_E3"
+    },
+    "data": {
+        "name": "WeatherBench",
+        "dataroot": "/mnt/data/papikyan/WeatherBench/numpy",
+        "batch_size": 16,
+        "num_workers": 4,
+        "use_shuffle": true,
+        "train_min_date": "1970-01-01-00",
+        "train_max_date": "2000-01-01-00",
+        "train_subset_min_date": "2014-01-01-00",
+        "train_subset_max_date": "2016-01-01-00",
+        "transformation": "GlobalStandardScaling",
+        "apply_tranform_monthly": false,
+        "val_min_date": "2016-01-01-00",
+        "val_max_date": "2018-01-01-00",
+        "variables": ["t2m"],
+        "height": 128
+    },
+    "model": {
+        "finetune_norm": false,
+        "unet": {
+            "in_channel": 2,  // This should be equal to the number of variables * 2. Used in only networks.py 121 line.
+            "out_channel": 1, // This should be equal to the number of variables.
+            "inner_channel": 32,
+            "norm_groups": 32,  // 16
+            "channel_multiplier": [1, 2, 4],
+            "attn_res": [16, 32],  // Possible values are 128, 64, 32, 16 and depends on channel_multipliers.
+            "res_blocks": 1,
+            "dropout": 0.3,
+            "init_method": "kaiming"
+        },
+        "beta_schedule": {
+            "train": {
+                "schedule": "cosine",
+                "n_timestep": 2000,
+                "linear_start": 1e-6,
+                "linear_end": 1e-2
+            },
+            "val": {
+                "schedule": "cosine",
+                "n_timestep": 2000,
+                "linear_start": 1e-6,
+                "linear_end": 1e-2
+            },
+            "test": {
+                "schedule": "cosine",
+                "n_timestep": 2000,
+                "linear_start": 1e-6,
+                "linear_end": 1e-2
+            }
+        },
+        "diffusion": {
+            "conditional": true,
+            "loss": "l2"
+        }
+    },
+    "training": {
+        "epoch_n_iter": 20000,
+        "val_freq": 2000,
+        "save_checkpoint_freq": 2000,
+        "print_freq": 100,
+        "n_val_vis": 1,
+        "val_vis_freq": 100000000,  // 500
+        "sample_size": 2, // 5
+        "optimizer": {
+            "type": "adam",  // Possible types are ['adam', 'adamw']
+            "amsgrad": false,
+            "lr": 5e-5
+        }
+    }
+}
