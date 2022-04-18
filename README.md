@@ -10,8 +10,8 @@ Advisor: Kevin Höhlein (Chair of Computer Graphics and Visualization)
 Downscaling combines methods that are used to infer high-resolution information from 
 low-resolution climate variables. We approach this problem as an image super-resolution 
 task and employ Denoising Diffusion Probabilistic Model to generate finer-scale variables 
-conditioned on coarse-scale information. Experiments are conducted on WeatherBench dataset. 
-Experiments are conducted by analysing temperature at 2 m height above the surface. 
+conditioned on coarse-scale information. Experiments are conducted on WeatherBench dataset 
+by analysing temperature at 2 m height above the surface. 
 
 ![](results/reverse_diffusion_steps.jpg?raw=true)
 
